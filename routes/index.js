@@ -7,6 +7,7 @@ router.get('/', function (req, res, next) {
     Config.getSiteTitle(req).then(function (result) {
         res.render('index', {title: result});
     }).catch((err)=> {
+        console.log(err);
         res.send("Error");
     });
 });
