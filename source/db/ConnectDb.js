@@ -3,7 +3,7 @@
  */
 
 const orm = require("orm");
-const Config = require("./Config");
+const Constants = require("./Constants");
 
 
 function defineUserTable(db, models) {
@@ -29,6 +29,7 @@ function defineAccessKeyTable(db, models) {
         id: Number,
         user_id: Number,
         access_key: String,
+        data: String,
         creation_date: String,
         expired_date: String
     }, {
@@ -45,6 +46,7 @@ function defineAccessKeyTable(db, models) {
 
 function defineConfigTable(db, models) {
     models.Config = db.define("config", {
+        id: Number,
         name: String,
         value: String
     });
@@ -52,7 +54,7 @@ function defineConfigTable(db, models) {
 
 
 module.exports = function () {
-    return orm.express(Config.mysqlConnectString, {
+    return orm.express(Constants.mysqlConnectString, {
         define: function (db, models, next) {
             defineUserTable(db, models);
             defineAccessKeyTable(db, models);
