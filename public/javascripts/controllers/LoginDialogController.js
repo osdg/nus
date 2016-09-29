@@ -32,6 +32,7 @@ window.nus = window.nus || {};
             <h4 class="modal-title">用户登陆</h4>
           </div>
           <div class="modal-body">
+            <div class="main-alert-div" style="color: red;"></div>
             <table>
                 <tbody>
                     <tr><td>用户名：</td><td><input class="form-control" type="text" placeholder="请输入用户名" required="required" name="user"></td></tr>
@@ -56,7 +57,16 @@ window.nus = window.nus || {};
                 }
             });
 
+            this._form = this._loginDialog.find("form");
+            this._mainAlertDiv = this._loginDialog.find(".main-alert-div");
+            this._btnSubmit = this._loginDialog.find("input[type='submit']");
+
             this._btnGoRegisterDialog = this._loginDialog.find(".btn-go-register-dialog");
+
+            this.addListeners();
+        }
+
+        addListeners() {
             this._btnGoRegisterDialog.on("click", event=> {
                 event.preventDefault();
 
@@ -65,6 +75,46 @@ window.nus = window.nus || {};
                 this._preventClose = true;
 
                 this.commandHandler.sendCommand2(nus.Commands.SHOW_REGISTER_DIALOG);
+            });
+
+            let self = this;
+            this._form.on("submit", function (e) {
+
+                e.preventDefault();
+
+                if (!self.connecting) {
+                    self.connecting = true;
+                    self._mainAlertDiv.html("正在连接服务器...");
+
+                    $.post(nus.Constants.userLoginUrl, {
+                        user: this["user"].value,
+                        password: this["password"].value
+                    }).done(data=> {
+                        console.log(data);
+                        self.connecting = false;
+
+                        switch (data.code) {
+                            case 1:
+                                self._mainAlertDiv.empty();
+                                //TODO handle login success
+                                break;
+                            case 10001:
+                            case 10002:
+                            case 10003:
+                            case 10004:
+                                self._mainAlertDiv.html("用户名或密码错误");
+                                break;
+                            default:
+                                self._mainAlertDiv.html("未知错误，请联系开发人员");
+                                break;
+                        }
+
+                    }).fail(error=> {
+                        self.connecting = false;
+
+                        self._mainAlertDiv.html("无法连接服务器，请稍候重试");
+                    });
+                }
             });
         }
 
@@ -75,6 +125,16 @@ window.nus = window.nus || {};
                     this._loginDialog.modal("show");
                     break;
             }
+        }
+
+        set connecting(value) {
+            this._connecting = value;
+
+            this._btnSubmit.disabled = value;
+        }
+
+        get connecting() {
+            return this._connecting;
         }
     }
 

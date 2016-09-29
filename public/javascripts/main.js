@@ -50,7 +50,8 @@
         }
 
         startApp() {
-            this.sendCommand(new lf.Command(nus.Commands.SHOW_REGISTER_DIALOG));
+            // this.sendCommand(new lf.Command(nus.Commands.SHOW_REGISTER_DIALOG));
+            this.sendCommand(new lf.Command(nus.Commands.SHOW_LOGIN_DIALOG));
         }
     }
 

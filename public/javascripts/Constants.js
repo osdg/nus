@@ -13,5 +13,12 @@ nus.Constants = {
             this._userRegisterUrl = `${this.BASE_URL}/user/register`;
         }
         return this._userRegisterUrl;
+    },
+
+    get userLoginUrl() {
+        if (!this._userLoginUrl) {
+            this._userLoginUrl = `${this.BASE_URL}/user/login`;
+        }
+        return this._userLoginUrl;
     }
 };

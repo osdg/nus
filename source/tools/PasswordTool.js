@@ -3,6 +3,7 @@
  */
 
 const crypto = require("crypto");
+const uuid = require("uuid");
 
 const PasswordTool = {
 
@@ -12,6 +13,18 @@ const PasswordTool = {
 
     md5: function (value) {
         return crypto.createHash("md5").update(value).digest("hex");
+    },
+
+    uuidv1: function () {
+        return uuid.v1();
+    },
+
+    uuidv4: function () {
+        return uuid.v4();
+    },
+
+    makeAccessKey(){
+        return this.md5(this.uuidv4());
     }
 };
 

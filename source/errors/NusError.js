@@ -5,7 +5,13 @@
 class NusError extends Error {
 
     constructor(message, id) {
-        super(message, id);
+        super(message);
+
+        this._id = id;
+    }
+
+    get id() {
+        return this._id;
     }
 }
 

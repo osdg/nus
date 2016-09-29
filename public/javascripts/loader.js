@@ -21,16 +21,26 @@ nus.Config = {SRC: "javascripts", LIB_DIR: "libs"};
         loadingDiv.innerHTML = "Loading...";
         document.body.appendChild(loadingDiv);
 
-        Promise.all([
-            nus.loadScript(`${nus.Config.LIB_DIR}/lf.js`),
-            nus.loadScript(`${nus.Config.SRC}/Constants.js`),
-            nus.loadScript(`${nus.Config.SRC}/Commands.js`),
-            nus.loadScript(`${nus.Config.SRC}/controllers/HeaderController.js`),
-            nus.loadScript(`${nus.Config.SRC}/controllers/LoadingDialogController.js`),
-            nus.loadScript(`${nus.Config.SRC}/controllers/LoginDialogController.js`),
-            nus.loadScript(`${nus.Config.SRC}/controllers/RegisterDialogController.js`),
-            nus.loadScript(`${nus.Config.SRC}/main.js`)
-        ]).then(function (result) {
+        let scripts = [
+            `${nus.Config.LIB_DIR}/lf.js`,
+            `${nus.Config.SRC}/Constants.js`,
+            `${nus.Config.SRC}/Commands.js`,
+            `${nus.Config.SRC}/controllers/HeaderController.js`,
+            `${nus.Config.SRC}/controllers/LoadingDialogController.js`,
+            `${nus.Config.SRC}/controllers/LoginDialogController.js`,
+            `${nus.Config.SRC}/controllers/RegisterDialogController.js`,
+            `${nus.Config.SRC}/main.js`
+        ];
+
+        let chain = nus.loadScript(scripts[0]);
+        for (var i = 1; i < scripts.length; i++) {
+            (function (index) {
+                chain = chain.then(function () {
+                    return nus.loadScript(scripts[index]);
+                });
+            })(i);
+        }
+        chain.then(function (result) {
             if (loadingDiv.parentNode) {
                 loadingDiv.parentNode.removeChild(loadingDiv);
             }
